@@ -1,4 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+using System.Drawing.Text;
 using System.Globalization;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace BPMTap
 {
@@ -46,6 +50,24 @@ namespace BPMTap
             this.HideAfterTimeout();
 
             this.notifyIcon.Visible = true;
+
+
+            // Convert the byte array of your font in your Resources to a font family object
+            System.Drawing.Text.PrivateFontCollection pfc = new System.Drawing.Text.PrivateFontCollection();
+            int fontLength = Properties.Resources.DSEG14Classic_Regular.Length;
+            byte[] fontData = Properties.Resources.DSEG14Classic_Regular;
+            IntPtr fontPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(fontLength);
+            System.Runtime.InteropServices.Marshal.Copy(fontData, 0, fontPtr, fontLength);
+            pfc.AddMemoryFont(fontPtr, fontLength);
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(fontPtr);
+            FontFamily fontFamily = pfc.Families[0];
+
+            // Create a new Font object using the FontFamily and desired size.
+            float fontSize = 64; // Replace with your desired font size
+            Font font = new Font(fontFamily, fontSize);
+
+            // Set the Font property of your label to the newly created Font object.
+            this.label1.Font = font;
         }
 
         private void Form1_Load(object sender, EventArgs e)
